@@ -1,0 +1,75 @@
+#----------------- c-DTM -----------------
+tm:
+  h: 6.0
+  a_end: 100.0
+  steps_per_h: 1200
+  control_variate: 1.0
+
+  # Replay buffer
+  num_buffer_prompts: 40
+  num_buffer_refresh: 10
+  buffer_refresh_steps: 25
+  buffer_chunk_size: 30
+  num_batch_prompts: 12
+  num_completions_per_prompt: 6
+
+  grad_accum_steps: 8
+
+  # SAR-aligned interpolant + active-block-norm weighting (Appendix C)
+  use_sar_active_block_norm: true
+
+  # EMA of student adapter (refreshed per h-phase)
+  use_ema: true
+  ema_decay: 0.95
+
+#----------------- Optimizer -----------------
+adam_beta1: 0.9
+adam_beta2: 0.99
+adam_epsilon: 1.0e-8
+weight_decay: 0.1
+
+max_grad_norm: 2.0
+learning_rate: 4e-6
+lr_min: 2e-6
+lr_scheduler_type: linear
+lr_warmup_ratio: 0.05
+lr_decay_ratio: 0.1
+
+#----------------- Diffusion sampling -----------------
+block_length: 32
+cfg_scale: 0.0
+diffusion_steps: 128
+max_completion_length: 256
+max_prompt_length: 172
+remasking_strategy: low_confidence
+sampling_temperature: 1.0
+
+#----------------- Model -----------------
+use_peft: true
+torch_dtype: bfloat16
+load_in_4bit: true
+base_model_path: ${oc.env:LLADA_MODEL_PATH,/path/to/LLaDA-8B-Instruct}
+lora_r: 128
+lora_alpha: 64
+lora_dropout: 0.05
+peft_task_type: CAUSAL_LM
+
+#----------------- Logging / checkpointing -----------------
+checkpoint_dir: ${oc.env:DTM_CHECKPOINT_DIR,runs/checkpoints/countdown}
+ckpt_freq: 100
+metrics_log_every: 1
+resume_path:  # leave empty to train from scratch
+
+wandb:
+  entity: yuyuanchen-harvard-university
+  project: LLaDA_DTM
+  name: dtm_countdown
+
+#----------------- Task -----------------
+dataset: countdown
+max_rwd: 1.0
+few_shot: 0
+seed: 42
+nodes: 4
+devices: 2
+world_size: 8
