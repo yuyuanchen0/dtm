@@ -20,11 +20,11 @@
 
 ## Overview
 
-Masked diffusion language models (dLLMs) generate by progressively unmasking tokens. This gives them flexible and parallel decoding, but it also makes standard RL-style sequence-level objectives awkward: the marginal likelihood of a completed sequence requires summing over intractably many possible unmasking orders.
+Masked diffusion language models (dLLMs) progressively unmask tokens, allowing for flexible and parallel decoding, but also making standard RL-style sequence-level objectives awkward. The likelihood of a completed sequence requires summing over intractably many possible unmasking orders.
 
-**Discrete Tilt Matching (DTM)** avoids this likelihood bottleneck. Instead of optimizing a sequence likelihood surrogate, DTM views fine-tuning as **progressive reward tilting** and matches **state-level local unmasking posteriors**. The resulting *c*-DTM objective is a weighted cross-entropy loss with an explicit minimizer and a control variate for improved stability.
+**Discrete Tilt Matching (DTM)** avoids the likelihood bottleneck. Instead of optimizing a sequence likelihood surrogate, DTM views fine-tuning as **progressive reward tilting** and matches **state-level local unmasking posteriors**. The resulting *c*-DTM objective is a weighted cross-entropy loss with an explicit minimizer and a control variate for improved stability.
 
-This repository contains the cleaned training and evaluation pipeline used for the LLaDA-8B-Instruct fine-tuning experiments on:
+This repository contains training and evaluation pipeline used for the LLaDA-8B-Instruct fine-tuning experiments on:
 
 | Task | Setting | Released config |
 | --- | --- | --- |
@@ -39,6 +39,10 @@ The paper reports strong gains for DTM on structured planning tasks when fine-tu
 | --- | ---: | ---: |
 | Sudoku | 99.2 | 99.4 |
 | Countdown | 81.3 | 78.9 |
+
+The complete results are as follows:
+
+![Results](scripts/results.png)
 
 ## Method Highlights
 
